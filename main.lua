@@ -90,7 +90,7 @@ local ground = {
   y = 440, 
   w = FrameWidth, 
   h = 280, 
-  color = {1,1,1,1}
+  color = {1,0,1,1}
 }
 
 local player = {
@@ -105,9 +105,9 @@ function horseadd()
   local horse = {
     img = player.img, 
     x = FrameWidth/2+FrameWidth/3.5, 
-    y = 100, 
+    y = ground.y, 
     yspeed = 0,
-    jumpStrength = 325,
+    jumpStrength = 350,
     onGround = true,
     jumptimer = 0,
     offset = 45
@@ -115,7 +115,7 @@ function horseadd()
   if #player > 0 then
     local prevHorse = player[#player]
     horse.x = prevHorse.x + horse.offset
-    horse.jumptimer = prevHorse.jumptimer + 0.1
+    horse.jumptimer = prevHorse.jumptimer + 0.3
   end
   table.insert(player,horse)
 end
@@ -140,7 +140,7 @@ end
 
 function love.update(dt)
   for i,v in ipairs(player) do
-    Timer.every(v.jumptimer,jump(v)) --hump.timer function
+    Timer.update(dt)
     v.y = v.y + v.yspeed * dt
     v.yspeed = v.yspeed + grav
     if CheckCollisionBox(
@@ -151,6 +151,11 @@ function love.update(dt)
       v.y = ground.y - player.h
       v.onGround = true
     end
+    
+    if love.keyboard.isDown("left") then
+      v.x = v.x - 1
+    end
+    
   end
 end
 
@@ -160,7 +165,7 @@ function love.keypressed(key)
   if key == "z" then
     --player[1].yspeed = player[1].yspeed - player[1].jumpStrength
     for i,v in ipairs(player) do
-      jump(player[i])
+      Timer.after(player[i].jumptimer,function()jump(player[i])end)
     end
   end
 end
@@ -181,6 +186,7 @@ end
 function love.draw()
   lg.setColor(ground.color)
   lg.rectangle('fill',ground.x,ground.y,ground.w,ground.h)
+  lg.setColor(1,1,1,1)
   for i,v in ipairs(player) do
     lg.rectangle('fill',v.x,v.y,player.w,player.h)
     lg.draw(v.img,v.x,v.y)
