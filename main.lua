@@ -1,3 +1,4 @@
+--[[*****Old main code
 FrameWidth = love.graphics.getWidth()
 FrameHeight = love.graphics.getHeight()
 gravity = 19.8
@@ -76,4 +77,112 @@ function CheckCollisionBox(x1,y1,w1,h1,x2,y2,w2,h2)
          x2 < x1+w1 and
          y1 < y2+h2 and
          y2 < y1+h1
+end
+]]--
+
+lg = love.graphics
+FrameWidth,FrameHeight = love.graphics.getDimensions()
+local grav = 9.81
+Timer = require 'libs.hump.timer'
+
+local ground = {
+  x = 0, 
+  y = 440, 
+  w = FrameWidth, 
+  h = 280, 
+  color = {1,1,1,1}
+}
+
+local player = {
+  w = 40, 
+  h = 40, 
+  img = lg.newImage("player.png"),
+}
+
+
+
+function horseadd()
+  local horse = {
+    img = player.img, 
+    x = FrameWidth/2+FrameWidth/3.5, 
+    y = 100, 
+    yspeed = 0,
+    jumpStrength = 325,
+    onGround = true,
+    jumptimer = 0,
+    offset = 45
+    }
+  if #player > 0 then
+    local prevHorse = player[#player]
+    horse.x = prevHorse.x + horse.offset
+    horse.jumptimer = prevHorse.jumptimer + 0.1
+  end
+  table.insert(player,horse)
+end
+
+
+
+function CheckCollisionBox(x1,y1,w1,h1,x2,y2,w2,h2)
+  return x1 < x2+w2 and
+         x2 < x1+w1 and
+         y1 < y2+h2 and
+         y2 < y1+h1
+end
+
+
+
+function love.load()
+  for i=1,5 do
+    horseadd()
+  end
+end
+
+
+function love.update(dt)
+  for i,v in ipairs(player) do
+    Timer.every(v.jumptimer,jump(v)) --hump.timer function
+    v.y = v.y + v.yspeed * dt
+    v.yspeed = v.yspeed + grav
+    if CheckCollisionBox(
+      v.x,v.y,player.w,player.h,
+      ground.x,ground.y,ground.w,ground.h) 
+    then
+      v.yspeed = 0
+      v.y = ground.y - player.h
+      v.onGround = true
+    end
+  end
+end
+
+
+
+function love.keypressed(key)
+  if key == "z" then
+    --player[1].yspeed = player[1].yspeed - player[1].jumpStrength
+    for i,v in ipairs(player) do
+      jump(player[i])
+    end
+  end
+end
+
+
+
+function jump(horse)
+  if horse.onGround then
+    horse.yspeed = horse.yspeed - horse.jumpStrength
+    horse.onGround = false
+  end
+end
+
+  
+
+
+
+function love.draw()
+  lg.setColor(ground.color)
+  lg.rectangle('fill',ground.x,ground.y,ground.w,ground.h)
+  for i,v in ipairs(player) do
+    lg.rectangle('fill',v.x,v.y,player.w,player.h)
+    lg.draw(v.img,v.x,v.y)
+  end
 end
