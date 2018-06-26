@@ -4,15 +4,25 @@ local anim8 = require 'libs.anim8.anim8'
 local player_spritesheet = lg.newImage("player_spritesheet.png")
 player_spritesheet:setFilter('nearest')
 local grid = anim8.newGrid(32,32,player_spritesheet:getWidth(),player_spritesheet:getHeight(),0,0,0)
-local img = anim8.newAnimation(grid('1-6',1),0.1)
-
-entities.player = {}
 
 
+local Class = require("libs.hump.class")
 
-function horseadd()
+Player = Class {
+  init = function(self,x,y)
+    self.img = anim8.newAnimation(grid('1-6',1),0.1)
+    self.x = 0
+    self.y = 0
+    self.team = {}
+  end
+}
+
+player = Player(100,100)
+
+
+function Player:horseadd()
   local horse = {
-    img = player.img, 
+    img = self.img, 
     x = FrameWidth/2+FrameWidth/3, 
     y = entities.ground.y,
     w = 32,
@@ -27,16 +37,16 @@ function horseadd()
     jumptimer = 0,
     offset = 45
     }
-  if #player > 0 then
-    local prevHorse = player[#player]
+  if #team > 0 then
+    local prevHorse = self.team[#self.team]
     horse.x = prevHorse.x + horse.offset
     horse.jumptimer = prevHorse.jumptimer + 0.1
   end
-  table.insert(player,horse)
+  table.insert(self.team,horse)
 end
 
 
-
+--goes into rider.lua
 function love.keypressed(key)
   if key == "z" then
     for i,v in ipairs(player) do
@@ -46,8 +56,7 @@ function love.keypressed(key)
 end
 
 
-
-function jump(horse)
+function Player:jump(horse)
   if horse.onGround then
     horse.yspeed = horse.yspeed - horse.jumpStrength
     horse.onGround = false
@@ -66,14 +75,14 @@ end
 
 
 
-function player_load()
+function Player:load()
   player = {}
   for i=1,3 do
     horseadd()
   end
 end
 
-function player_update(dt)
+function Player:update(dt)
   img:update(dt)
   timer.update(dt)
   
@@ -111,7 +120,7 @@ function player_update(dt)
   end
 end
 
-function player_draw()
+function Player:draw()
   lg.setColor(1,1,1,1)
   for i,v in ipairs(player) do
     --lg.rectangle('fill',v.x,v.y,player.w,player.h)
