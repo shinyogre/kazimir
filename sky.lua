@@ -53,9 +53,10 @@ end
 
 
 function sky_draw()
+   lg.setBackgroundColor(1,1,0)
   lg.setColor(1,1,1,1)
   for _, e in ipairs(sky) do
-    lg.draw(e.img,e.x,e.y,e.rot,0.6,0.6)
+    lg.draw(e.img,e.x,e.y,0)
   end
 end
 

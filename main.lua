@@ -26,7 +26,6 @@ end
 
 
 function love.draw()
-  lg.setBackgroundColor(0,0,1)
   sky_draw()
   obstacle_draw()
   ground_draw()
