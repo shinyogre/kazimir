@@ -29,7 +29,7 @@ end
 
 function obstacle_update(dt)
   local kill_queue = {}
-  
+
   currenttime = currenttime + dt
   if currenttime > maxtime then
     currenttime = currenttime - maxtime

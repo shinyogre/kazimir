@@ -44,15 +44,26 @@ end
 
 
 
+function Player:keypressed(key)
+  if key == "z" then
+    for i,v in ipairs(self.team) do
+      timer.after(self.team[i].jumptimer,function()self:jump(self.team[i])end)
+    end
+  end
+end
+
+
 function Player:jump(horse)
+  print("jump test")
   if horse.onGround then
     horse.yspeed = horse.yspeed - horse.jumpStrength
     horse.onGround = false
   end
 end
 
---Use multiple dispatch/multimethod for collision detection
-function Player:collide()
+
+
+function CheckCollisionBox(x1,y1,w1,h1,x2,y2,w2,h2)
   return x1 < x2+w2 and
          x2 < x1+w1 and
          y1 < y2+h2 and
@@ -61,22 +72,38 @@ end
 
 
 
+
 function Player:load()
-  self:horseadd()
+  for i=1,3 do
+    self:horseadd()
+  end
 end
-
-
 
 function Player:update(dt)
   self.img:update(dt)
   timer.update(dt)
   
   for i,v in ipairs(self.team) do
+    --v.x = v.x - v.vx
+    --v.vx = v.vx * (1-math.min(dt*10,1)) 
+    --v.vx = v.vx + v.xspeed * dt
+
     v.y = v.y + v.yspeed * dt
     if not v.onGround then
       v.yspeed = v.yspeed + grav
     end
-
+    --[[
+    if CheckCollisionBox(
+      v.x,v.y,v.w,v.h,
+      entities.ground.x,entities.ground.y,entities.ground.w,entities.ground.h) 
+    then
+      v.yspeed = 0
+      v.y = entities.ground.y - v.h
+      v.onGround = true
+    end]]--
+    
+    --animation states (to add: walking, 'dying', idle, idle>riding)
+    --sprite batches perhaps?
     if v.yspeed < 0 then 
       v.jumpingUp = true 
       v.fallingDown = false
@@ -95,6 +122,8 @@ end
 function Player:draw()
   lg.setColor(1,1,1,1)
   for i,v in ipairs(self.team) do
+    --lg.rectangle('fill',v.x,v.y,player.w,player.h)
+    --lg.draw(v.img,v.x,v.y)
     self.img:draw(player_spritesheet,v.x,v.y)
   end
 end

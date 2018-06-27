@@ -5,7 +5,7 @@ rand = love.math.random
 --require("sky")
 --require("obstacles")
 --require("ground")
---require("player")
+require("player")
 --local pause = require("pause")
 local riding = require("riding")
 
@@ -16,14 +16,15 @@ function love.load()
   --entities = {} --turn this and everything else into local scope!
   --sky_load()
   --obstacle_load()
-  --player_load()
-  --Gamestate.registerEvents()
-  --Gamestate.switch(pause)
+  Gamestate.registerEvents()
+  Gamestate.switch(riding)
 end
 
 
 
 function love.update(dt)
+  --player:update(dt)
+  --player:update()
   --sky_update(dt)
   --obstacle_update(dt)
   --player_update(dt)
@@ -32,6 +33,7 @@ end
 
 
 function love.draw()
+  player:draw()
   --sky_draw()
   --obstacle_draw()
   --ground_draw()
