@@ -8,7 +8,7 @@ local grid = anim8.newGrid(32,32,player_spritesheet:getWidth(),player_spriteshee
 
 local Class = require("libs.hump.class")
 
-Player = Class {
+local Player = Class {
   init = function(self)
     self.img = anim8.newAnimation(grid('1-6',1),0.1)
     self.team = {}
@@ -105,5 +105,5 @@ player = Player(100,100)
 
 
 
-return
+return player
 

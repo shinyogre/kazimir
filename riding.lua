@@ -1,5 +1,6 @@
 local riding = {
-  player = require "player",
+  --player = require "player",
+  collision = require "collisiondetection",
   timer = require "libs.hump.timer"
 }
 
@@ -11,11 +12,13 @@ end
 
 function riding:update(dt)
   player:update(dt)
+  collision:update(dt)
 end
 
 
 function riding:draw()
   player:draw()
+
 end
 
 

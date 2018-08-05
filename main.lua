@@ -5,7 +5,7 @@ rand = love.math.random
 --require("sky")
 --require("obstacles")
 --require("ground")
-require("player")
+--local player = require("player")
 --local pause = require("pause")
 local riding = require("riding")
 
@@ -33,7 +33,7 @@ end
 
 
 function love.draw()
-  player:draw()
+  --player:draw()
   --sky_draw()
   --obstacle_draw()
   --ground_draw()
